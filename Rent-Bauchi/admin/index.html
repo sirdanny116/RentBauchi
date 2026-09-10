@@ -1,0 +1,82 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Admin Portal — Rent Bauchi</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <main class="form-page">
+      <form class="form-card reveal-scale" id="login">
+        <a class="brand" href="../index.html">
+          <span class="brand-mark">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg>
+          </span>
+          Rent Bauchi <span class="brand-tag">Admin</span>
+        </a>
+        <h1>Admin Portal</h1>
+        <p class="muted">
+          This is a separate portal. It is not part of the renter/owner website
+          navigation.
+        </p>
+        <div id="error" class="error"></div>
+        <div class="field">
+          <label>Admin Email / Username</label>
+          <div class="input-wrap">
+            <svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+            <input name="identifier" required placeholder="admin@rentbauchi.com" />
+          </div>
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <div class="input-wrap">
+            <svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+            <input name="password" type="password" required placeholder="••••••••" />
+          </div>
+        </div>
+        <button class="btn btn-dark btn-block" id="loginBtn">
+          <svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>
+          Admin Login
+        </button>
+        <p class="muted">Admin accounts are referral/invitation only.</p>
+        <a href="register.html" style="color: var(--primary); font-weight: 700">Create Admin Account with referral</a>
+      </form>
+      <div class="form-page-foot">
+        © <span data-year>2026</span> Rent Bauchi Admin · <a href="../index.html">Back to site</a>
+      </div>
+    </main>
+    <script src="js/app.js"></script>
+    <script>
+      (async () => {
+        try {
+          const r = await fetch(API + "/auth/setup-status");
+          const d = await r.json();
+          if (d.required) { location.href = "/setup.html"; return; }
+        } catch {}
+      })();
+      document.querySelector("#login").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const btn = $("#loginBtn");
+        setLoading(btn, true, "Logging in…");
+        try {
+          const d = await api("/auth/login", {
+            method: "POST",
+            body: JSON.stringify(Object.fromEntries(new FormData(e.target))),
+          });
+          if (d.user.role !== "admin")
+            throw new Error("This portal is for Admin accounts only.");
+          localStorage.setItem(tokenKey, d.token);
+          localStorage.setItem(userKey, JSON.stringify(d.user));
+          toast("Welcome, " + (d.user.fullName || "Admin").split(" ")[0] + "!");
+          setTimeout(() => (location.href = "dashboard.html"), 500);
+        } catch (x) {
+          setLoading(btn, false);
+          toast(x.message, "error");
+          $("#error").textContent = x.message;
+          $("#error").style.display = "block";
+        }
+      });
+    </script>
+  </body>
+</html>
