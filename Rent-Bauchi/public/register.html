@@ -80,7 +80,7 @@
         <button class="btn btn-primary btn-block" id="regBtn">Create Account</button>
         <p class="muted" style="font-size: 13.5px; margin-top: 14px">
           Already have an account?
-          <a href="login.html" style="color: var(--primary); font-weight: 700">Login</a>
+          <a id="loginLink" href="login.html" style="color: var(--primary); font-weight: 700">Login</a>
         </p>
       </form>
       <div class="form-page-foot">
@@ -89,6 +89,14 @@
     </main>
     <script src="js/app.js"></script>
     <script>
+      const next =
+        new URLSearchParams(location.search).get("next") || "";
+      const safeNext = next.startsWith("/") && !next.startsWith("//") ? next : "";
+      if (safeNext) {
+        const loginLink = $("#loginLink");
+        if (loginLink)
+          loginLink.href = "login.html?next=" + encodeURIComponent(safeNext);
+      }
       document
         .querySelector("#regForm")
         .addEventListener("submit", async (e) => {
@@ -105,6 +113,10 @@
             setSession(d);
             toast("Account created. Welcome to Rent Bauchi!");
             setTimeout(() => {
+              if (safeNext) {
+                location.href = safeNext;
+                return;
+              }
               location.href =
                 d.user.role === "agent"
                   ? "/agent-dashboard.html"

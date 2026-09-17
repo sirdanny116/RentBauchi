@@ -49,6 +49,7 @@ const ICONS = {
   homePlus:
     '<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h6.5"/><path d="M17 13v6M14 16h6"/>',
   star: '<path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1-5.4-2.9-5.4 2.9 1-6.1L3.2 9.5l6.1-.9z"/>',
+  trash: '<path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/>',
 };
 function icon(name, size = 16) {
   return `<svg class="icon" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name] || ICONS.info}</svg>`;
@@ -141,6 +142,34 @@ function toast(message, type = "success", duration = 3200) {
   }
   setTimeout(dismiss, duration);
   return el;
+}
+
+/* ===========================
+   CONFIRM DIALOG
+   =========================== */
+function confirmDialog(message) {
+  return new Promise((resolve) => {
+    const o = document.createElement("div");
+    o.className = "overlay";
+    o.style.padding = "20px";
+    o.innerHTML = `<div class="form-card" style="max-width:420px;width:100%;text-align:center">
+      <div style="margin-bottom:18px">${icon("help", 36)}</div>
+      <p style="margin:0 0 22px;font-size:15px;font-weight:600;line-height:1.5">${esc(message)}</p>
+      <div style="display:flex;gap:10px;justify-content:center">
+        <button class="btn btn-light" data-action="cancel">Cancel</button>
+        <button class="btn btn-danger" data-action="confirm">Confirm</button>
+      </div>
+    </div>`;
+    o.addEventListener("click", (e) => {
+      if (e.target === o) { o.remove(); resolve(false); }
+    });
+    o.querySelector("[data-action='cancel']").addEventListener("click", () => { o.remove(); resolve(false); });
+    o.querySelector("[data-action='confirm']").addEventListener("click", () => { o.remove(); resolve(true); });
+    document.addEventListener("keydown", function escKey(e) {
+      if (e.key === "Escape") { o.remove(); resolve(false); document.removeEventListener("keydown", escKey); }
+    });
+    document.body.appendChild(o);
+  });
 }
 
 /* Button loading state */

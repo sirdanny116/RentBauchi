@@ -156,7 +156,7 @@
               />
             </div>
             <div class="notice" id="calc" role="alert">
-              <strong>Platform Alert:</strong> 5% of the Annual Rent
+<strong>Platform Alert:</strong> 10% of the Annual Rent
               (₦0) goes to the platform.
             </div>
             <div style="border-top:1px solid var(--line);margin:22px 0 18px;padding-top:18px">
@@ -327,7 +327,7 @@
           ? ps
               .map(
                 (p) =>
-                  `<div class="panel" style="margin:0 0 12px"><div class="split-actions" style="justify-content:space-between"><div><strong>${esc(p.title)}</strong><p class="muted">${esc(p.location)} · ${money(p.annualRent)} / year</p></div><span class="status ${esc(p.status)}">${esc(p.status)}</span></div><p>${esc(p.description || "")}</p><p>Inspection Fee (set by Admin): <strong>${money(p.inspectionFee)}</strong> · Platform share (5% of rent): ${money(p.platformShare)} · Interested renters: <strong>${p.interestedRenterIds?.length || 0}</strong></p><div class="media-grid">${(p.media || []).map((m) => (m.type.startsWith("video") ? `<video controls src="${esc(photoUrl(m.url))}"></video>` : `<img src="${esc(photoUrl(m.url))}">`)).join("")}</div><p class="muted">Property ID: ${esc(p.id)}</p></div>`,
+                  `<div class="panel" style="margin:0 0 12px"><div class="split-actions" style="justify-content:space-between"><div><strong>${esc(p.title)}</strong><p class="muted">${esc(p.location)} · ${money(p.annualRent)} / year</p></div><span class="status ${esc(p.status)}">${esc(p.status)}</span></div><p>${esc(p.description || "")}</p><p>Inspection Fee (set by Admin): <strong>${money(p.inspectionFee)}</strong> · Platform share (10% of rent): ${money(p.platformShare)} · Interested renters: <strong>${p.interestedRenterIds?.length || 0}</strong></p><div class="media-grid">${(p.media || []).map((m) => (m.type.startsWith("video") ? `<video controls src="${esc(photoUrl(m.url))}"></video>` : `<img src="${esc(photoUrl(m.url))}">`)).join("")}</div><p class="muted">Property ID: ${esc(p.id)}</p></div>`,
               )
               .join("")
           : '<div class="empty">No properties yet.</div>';
@@ -376,9 +376,9 @@
       });
       function calc() {
         const r = +$("#rent").value || 0;
-        const share = Math.round(r * 0.05);
+        const share = Math.round(r * 0.10);
         $("#calc").innerHTML =
-          `<strong>Platform Alert:</strong> 5% of the Annual Rent goes to the platform.<br>Annual Rent: <strong>${money(r)}</strong> · Platform share (5%): <strong>${money(share)}</strong>`;
+          `<strong>Platform Alert:</strong> 10% of the Annual Rent goes to the platform.<br>Annual Rent: <strong>${money(r)}</strong> · Platform share (10%): <strong>${money(share)}</strong>`;
       }
       $("#rent").addEventListener("input", calc);
       $("#profileForm").addEventListener("submit", async (e) => {

@@ -47,7 +47,7 @@
         </p>
         <p class="muted" style="font-size: 13.5px">
           Don't have an account?
-          <a href="register.html" style="color: var(--primary); font-weight: 700">Create an account</a>
+          <a id="createLink" href="register.html" style="color: var(--primary); font-weight: 700">Create an account</a>
         </p>
       </form>
       <div class="form-page-foot">
@@ -56,6 +56,15 @@
     </main>
     <script src="js/app.js"></script>
     <script>
+      const next =
+        new URLSearchParams(location.search).get("next") || "";
+      const safeNext = next.startsWith("/") && !next.startsWith("//") ? next : "";
+      if (safeNext) {
+        const createLink = $("#createLink");
+        if (createLink)
+          createLink.href =
+            "register.html?next=" + encodeURIComponent(safeNext);
+      }
       document
         .querySelector("#loginForm")
         .addEventListener("submit", async (e) => {
@@ -73,6 +82,10 @@
             setSession(d);
             toast("Welcome back, " + (d.user.fullName || "").split(" ")[0] + "!");
             setTimeout(() => {
+              if (safeNext) {
+                location.href = safeNext;
+                return;
+              }
               location.href =
                 d.user.role === "renter"
                   ? "/renter-dashboard.html"

@@ -317,11 +317,22 @@
           ? d.requests
               .map(
                 (r) =>
-                  `<div class="panel" style="margin:0 0 12px"><strong>#${esc(r.id)}</strong> — ${esc(r.property?.title || "Property")}<p class="muted">${esc(r.property?.location || "")} · ${esc(r.type)}</p><span class="status ${esc(r.status)}">${esc(r.status)}</span><div class="timeline" style="margin-top:14px">${(r.timeline || []).map((t) => `<div class="timeline-item"><strong>${esc(t.status)}</strong><div class="muted">${new Date(t.at).toLocaleString()}</div>${t.message ? `<div>${esc(t.message)}</div>` : ""}</div>`).join("")}</div></div>`,
+                  `<div class="panel" style="margin:0 0 12px"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap"><div><strong>#${esc(r.id)}</strong> — ${esc(r.property?.title || "Property")}<p class="muted">${esc(r.property?.location || "")} · ${esc(r.type)}</p><span class="status ${esc(r.status)}">${esc(r.status)}</span></div><button class="btn btn-danger btn-sm" onclick="deleteRequest('${r.id}')">${icon("trash",13)} Remove</button></div><div class="timeline" style="margin-top:14px">${(r.timeline || []).map((t) => `<div class="timeline-item"><strong>${esc(t.status)}</strong><div class="muted">${new Date(t.at).toLocaleString()}</div>${t.message ? `<div>${esc(t.message)}</div>` : ""}</div>`).join("")}</div></div>`,
               )
               .join("")
           : '<div class="empty">No requests yet.</div>';
       }
+      async function deleteRequest(id) {
+        if (!await confirmDialog("Are you sure you want to remove this request?")) return;
+        try {
+          await api("/renter/requests/" + id, { method: "DELETE" });
+          toast("Request removed.");
+          requests();
+        } catch (e) {
+          toast(e.message, "error");
+        }
+      }
+      window.deleteRequest = deleteRequest;
       requests();
       async function contact() {
         const d = await api("/platform/contact");
@@ -404,9 +415,9 @@
         if (waLink) return waLink;
         try {
           const d = await api("/platform/contact");
-          waLink = d.whatsapp || "https://wa.me/2348012345678";
+          waLink = d.whatsapp || "https://wa.me/2348144319299";
         } catch {
-          waLink = "https://wa.me/2348012345678";
+          waLink = "https://wa.me/2348144319299";
         }
         return waLink;
       }
@@ -525,7 +536,9 @@
         if (gMain) {
           gMain.addEventListener("click", () => {
             const urls = mediaList.length ? mediaList.map((m) => photoUrl(m.url)) : [main];
-            let i = urls.indexOf(gMain.style.backgroundImage.replace(/url\('?|'?\)/g, ""));
+            const bg = gMain.style.backgroundImage || "";
+            const bgUrl = bg.slice(bg.indexOf("(") + 1, bg.lastIndexOf(")")).replace(/^["']|["']$/g, "");
+            let i = urls.indexOf(bgUrl);
             if (i < 0) i = 0;
             const ov = document.createElement("div");
             ov.className = "lightbox";
