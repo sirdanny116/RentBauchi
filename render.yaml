@@ -29,15 +29,17 @@ services:
         generateValue: true
       - key: CORS_ORIGINS
         value: "*"
-      # Email: free-tier instances block SMTP (ports 25/465/587), so SMTP_* will
-      # not work. To email reset codes to users, add these two env vars (free:
-      # https://brevo.com — verify BREVO_FROM_EMAIL once in Brevo, no domain needed):
-      #   - key: BREVO_API_KEY
-      #     value: xkeysib-xxxxxxxx
-      #   - key: BREVO_FROM_EMAIL
-      #     value: you@example.com
-      # Without them the app runs in demo mode and returns reset codes in the API
-      # response.
+      # Email via Brevo HTTP API — required because free-tier instances block
+      # SMTP (ports 25/465/587). sync: false keeps the values ONLY in the Render
+      # Environment tab (never in this file/repo). Create the API key at
+      # brevo.com -> SMTP & API -> API Keys, verify BREVO_FROM_EMAIL as a sender
+      # once, then paste both into the service's Environment tab.
+      - key: BREVO_API_KEY
+        sync: false
+      - key: BREVO_FROM_EMAIL
+        sync: false
+      - key: BREVO_FROM_NAME
+        value: Rent Bauchi
       #
       # Paid upgrade only — persistent disk keeps the DB/uploads across deploys.
       # Also change `plan: free` to `plan: starter` above.
