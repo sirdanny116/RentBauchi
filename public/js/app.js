@@ -464,6 +464,36 @@ function wireLogout() {
     b.addEventListener("click", logout),
   );
 }
+function renderAuthNav() {
+  const u = user();
+  if (!u || !token()) return;
+  const act = document.querySelector(".nav-actions");
+  if (!act) return;
+  const links = [...act.querySelectorAll("a")].filter((a) =>
+    /login\.html|register\.html$/.test(a.getAttribute("href") || ""),
+  );
+  if (!links.length) return;
+  const dash =
+    u.role === "admin"
+      ? "/admin/"
+      : u.role === "agent"
+        ? "/agent-dashboard.html"
+        : "/renter-dashboard.html";
+  const group = document.createElement("span");
+  group.className = "nav-auth";
+  group.innerHTML =
+    '<a class="btn btn-outline" href="' +
+    dash +
+    '">' +
+    icon("user", 14) +
+    " " +
+    esc(u.fullName || u.username || "Dashboard") +
+    '</a><button class="btn btn-primary" data-logout>Logout</button>';
+  const ref = links[links.length - 1].nextSibling;
+  links.forEach((el) => el.remove());
+  act.insertBefore(group, ref || null);
+  wireLogout();
+}
 /* Newsletter forms (footer) */
 function wireNewsletter() {
   document.querySelectorAll(".newsletter").forEach((form) => {
@@ -483,6 +513,7 @@ document.addEventListener("DOMContentLoaded", () => {
   wireMobileMenu();
   wireMobileNav();
   wireLogout();
+  renderAuthNav();
   wireNewsletter();
   wireBrowseControls();
   loadPublicProperties();
