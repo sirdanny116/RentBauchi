@@ -151,6 +151,12 @@ For durable data, either upgrade to `plan: starter` and attach the persistent
 disk (see the commented block in `render.yaml`), or move the DB/uploads to
 external storage.
 
+The repo ships a small demo seed (`backend/data/db.seed.json`: one agent and two
+approved listings) with its photos in `backend/data/seed-uploads/`. On boot the
+server seeds the database when it is empty and copies those photos into
+`UPLOAD_DIR`, so a fresh/ephemeral deploy still shows listings. Replace or clear
+the seed for a clean production start.
+
 ### Railway / Heroku
 
 - A `Procfile` is included for platforms that use it: `web: node backend/src/server.js`.

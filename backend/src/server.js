@@ -44,6 +44,19 @@ const UPLOAD_DIR = process.env.UPLOAD_DIR || path.join(__dirname, "../uploads");
 
 fs.mkdirSync(UPLOAD_DIR, {recursive:true});
 
+// Seed images shipped with the repo (data/seed-uploads) are copied into the
+// uploads folder on boot, so demo listings keep their photos even on hosts with
+// an ephemeral filesystem.
+const SEED_UPLOAD_DIR = path.join(DATA_DIR, "seed-uploads");
+if (fs.existsSync(SEED_UPLOAD_DIR)) {
+  for (const name of fs.readdirSync(SEED_UPLOAD_DIR)) {
+    const dest = path.join(UPLOAD_DIR, name);
+    if (!fs.existsSync(dest)) {
+      try { fs.copyFileSync(path.join(SEED_UPLOAD_DIR, name), dest); } catch (e) { console.error("[seed-uploads]", name, e.message); }
+    }
+  }
+}
+
 const seed = JSON.parse(fs.readFileSync(path.join(DATA_DIR, "db.seed.json"), "utf8"));
 const store = new Store(DB_FILE);
 store.seedIfEmpty(seed);

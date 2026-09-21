@@ -1,6 +1,101 @@
 {
-  "users": [],
-  "properties": [],
+  "users": [
+    {
+      "id": "user-be832bdd-c694-45db-8927-926c7e32aeee",
+      "role": "agent",
+      "fullName": "Bauchi Property Agent",
+      "username": "bauchiagent",
+      "phone": "+2348000000000",
+      "email": "agent@rentbauchi.demo",
+      "passwordHash": "$2a$10$FlC/UHbL9U8b.2HyKuC9z.YRik9DdFkue6uLYDFkFpwB2CVDuzTFO",
+      "location": "Bauchi",
+      "country": "Nigeria",
+      "bio": "",
+      "profileImage": "",
+      "verified": true,
+      "ninImage": "",
+      "verificationStatus": "APPROVED",
+      "passwordResetToken": "",
+      "passwordResetExpires": 0,
+      "savedPropertyIds": []
+    }
+  ],
+  "properties": [
+    {
+      "id": "prop-09e47707-c38a-4645-82a2-65ade2bd5720",
+      "ownerId": "user-be832bdd-c694-45db-8927-926c7e32aeee",
+      "title": "3 Bedrooms House For Rent in Bauchi LGA",
+      "description": "updated 3-bedroom, 3-bath condo, Floor-to-ceiling windows offer breathtaking city views, while the open-concept layout features engineered hardwood floors and a fully updated kitchen with quartz countertops and Bosch appliances. ",
+      "location": "Gubi, Bauchi",
+      "type": "House",
+      "subtype": "3 Bedroom",
+      "annualRent": 500000,
+      "inspectionFee": 0,
+      "bedrooms": 1,
+      "bathrooms": 1,
+      "facilities": "Parking space ,Running water and Security",
+      "address": "Opposite ATBU gate Gubi campus",
+      "media": [
+        {
+          "url": "/uploads/1789769486478-112161997a.jpg",
+          "name": "download (30).jpg",
+          "type": "image/jpeg"
+        },
+        {
+          "url": "/uploads/1789769486617-42f893066c.jpg",
+          "name": "download (39).jpg",
+          "type": "image/jpeg"
+        },
+        {
+          "url": "/uploads/1789769486696-f913424e8c.jpg",
+          "name": "download (48).jpg",
+          "type": "image/jpeg"
+        },
+        {
+          "url": "/uploads/1789769486754-87ae809cc7.jpg",
+          "name": "download (45).jpg",
+          "type": "image/jpeg"
+        }
+      ],
+      "status": "APPROVED",
+      "verified": true,
+      "interestedRenterIds": [],
+      "createdAt": "2026-09-18T22:11:26.054Z",
+      "adminReason": ""
+    },
+    {
+      "id": "prop-c4982895-c516-44a2-87be-7debdae3da05",
+      "ownerId": "user-be832bdd-c694-45db-8927-926c7e32aeee",
+      "title": "Shop For Rent in Bauchi LGA",
+      "description": "Brand New Ultra-Modern Shop with toilets ",
+      "location": "Yelwa Market Bauchi",
+      "type": "Shop",
+      "subtype": "Single Room",
+      "annualRent": 250000,
+      "inspectionFee": 5000,
+      "bedrooms": 0,
+      "bathrooms": 1,
+      "facilities": "security",
+      "address": "Opposite ATBU yelwa campus",
+      "media": [
+        {
+          "url": "/uploads/1789774853500-44df242d41.jpg",
+          "name": "Shopping complex plaza.jpg",
+          "type": "image/jpeg"
+        },
+        {
+          "url": "/uploads/1789774853603-5e2fdaf35e.jpg",
+          "name": "download (51).jpg",
+          "type": "image/jpeg"
+        }
+      ],
+      "status": "APPROVED",
+      "verified": true,
+      "interestedRenterIds": [],
+      "createdAt": "2026-09-18T23:40:53.301Z",
+      "adminReason": ""
+    }
+  ],
   "requests": [],
   "invites": [],
   "settings": {
