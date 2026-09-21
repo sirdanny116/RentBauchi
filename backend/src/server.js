@@ -364,22 +364,22 @@ app.get("/api/properties/:id",(req,res)=>{
   res.json({property:propertyView(d,p)});
 });
 
-app.post("/api/renter/saved/:id",auth,roles("renter"),(req,res)=>{
+app.post("/api/renter/saved/:id",auth,(req,res)=>{
   const d=db(),u=getUser(d,req.auth.id),p=d.properties.find(x=>x.id===req.params.id);
   if(!p) return res.status(404).json({message:"Property not found"});
   u.savedPropertyIds=u.savedPropertyIds||[];
   if(!u.savedPropertyIds.includes(p.id)) u.savedPropertyIds.push(p.id);
   save(); res.json({message:"Property saved"});
 });
-app.delete("/api/renter/saved/:id",auth,roles("renter"),(req,res)=>{
+app.delete("/api/renter/saved/:id",auth,(req,res)=>{
   const d=db(),u=getUser(d,req.auth.id); u.savedPropertyIds=(u.savedPropertyIds||[]).filter(x=>x!==req.params.id); save(); res.json({message:"Removed"});
 });
-app.get("/api/renter/saved",auth,roles("renter"),(req,res)=>{
+app.get("/api/renter/saved",auth,(req,res)=>{
   const d=db(),u=getUser(d,req.auth.id); const ids=u.savedPropertyIds||[];
   res.json({properties:d.properties.filter(p=>ids.includes(p.id)).map(p=>propertyView(d,p))});
 });
 
-app.post("/api/renter/interested/:id",auth,roles("renter"),(req,res)=>{
+app.post("/api/renter/interested/:id",auth,(req,res)=>{
   const d=db(),p=d.properties.find(x=>x.id===req.params.id); if(!p) return res.status(404).json({message:"Property not found"});
   p.interestedRenterIds=p.interestedRenterIds||[];
   if(!p.interestedRenterIds.includes(req.auth.id)) p.interestedRenterIds.push(req.auth.id);
@@ -387,18 +387,18 @@ app.post("/api/renter/interested/:id",auth,roles("renter"),(req,res)=>{
   d.requests.push(request); save(); res.status(201).json({request});
 });
 
-app.post("/api/renter/requests",auth,roles("renter"),(req,res)=>{
+app.post("/api/renter/requests",auth,(req,res)=>{
   const {propertyId,type,message}=req.body; const d=db();
   if(!["enquiry","inspection","payment","other"].includes(type)) return res.status(400).json({message:"Invalid request type"});
   const p=d.properties.find(x=>x.id===propertyId); if(!p) return res.status(404).json({message:"Property not found"});
   const request={id:id("req"),renterId:req.auth.id,propertyId,type,message:message||"",status:"PENDING",createdAt:new Date().toISOString(),timeline:[{status:"PENDING",at:new Date().toISOString()}]};
   d.requests.push(request); save(); res.status(201).json({request});
 });
-app.get("/api/renter/requests",auth,roles("renter"),(req,res)=>{
+app.get("/api/renter/requests",auth,(req,res)=>{
   const d=db(); const rows=d.requests.filter(r=>r.renterId===req.auth.id).map(r=>({...r,property:d.properties.find(p=>p.id===r.propertyId)?propertyView(d,d.properties.find(p=>p.id===r.propertyId)):null}));
   res.json({requests:rows});
 });
-app.delete("/api/renter/requests/:id",auth,roles("renter"),(req,res)=>{
+app.delete("/api/renter/requests/:id",auth,(req,res)=>{
   const d=db(); const idx=d.requests.findIndex(r=>r.id===req.params.id && r.renterId===req.auth.id);
   if(idx===-1) return res.status(404).json({message:"Request not found"});
   d.requests.splice(idx,1); save(); res.json({message:"Request removed"});

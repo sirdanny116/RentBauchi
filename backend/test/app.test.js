@@ -229,6 +229,27 @@ test("renter save and unsave a property", async () => {
   assert.ok(!afterList.json.properties.some((p) => p.id === seededPropertyId));
 });
 
+test("agent can also save and express interest (any role)", async () => {
+  const saved = await req("POST", "/api/renter/saved/" + seededPropertyId, {
+    token: agent.token,
+  });
+  assert.strictEqual(saved.status, 200);
+
+  const interested = await req(
+    "POST",
+    "/api/renter/interested/" + seededPropertyId,
+    { token: agent.token },
+  );
+  assert.strictEqual(interested.status, 201);
+
+  const list = await req("GET", "/api/renter/saved", { token: agent.token });
+  assert.ok(list.json.properties.some((p) => p.id === seededPropertyId));
+
+  await req("DELETE", "/api/renter/saved/" + seededPropertyId, {
+    token: agent.token,
+  });
+});
+
 test("renter request shows up for admin", async () => {
   const created = await req("POST", "/api/renter/requests", {
     token: renter.token,
