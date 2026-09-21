@@ -1,0 +1,121 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Property Review — Rent Bauchi Admin</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="dashboard-shell">
+      <aside class="sidebar" id="sidebar">
+        <a class="brand" href="/admin/dashboard.html">
+          <span class="brand-mark">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg>
+          </span>
+          Rent Bauchi Admin
+        </a>
+        <nav class="side-nav">
+          <a href="dashboard.html">
+            <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M3 13h18"/></svg>
+            Overview
+          </a>
+          <a href="users.html">
+            <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16.5 4.5a3.5 3.5 0 0 1 0 6.6"/><path d="M18.5 20a6.5 6.5 0 0 0-3.2-5.6"/></svg>
+            Users & Verification
+          </a>
+          <a class="active" href="properties.html">
+            <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16"/><path d="M16 9h3a1 1 0 0 1 1 1v11"/><path d="M8 8h2M8 12h2M8 16h2M2 21h20"/></svg>
+            Property Review
+          </a>
+          <a href="requests.html">
+            <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13"/><path d="M3 6h.01M3 12h.01M3 18h.01"/></svg>
+            Requests
+          </a>
+          <div class="sidebar-divider"></div>
+          <button data-logout>
+            <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>
+            Logout
+          </button>
+        </nav>
+      </aside>
+      <main class="main">
+        <button
+          class="btn btn-light mobile-menu"
+          onclick="sidebar.classList.toggle('open')"
+        >
+          <svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+          Menu
+        </button>
+        <div class="dash-top">
+          <div>
+            <h1>Property Review</h1>
+            <p class="muted">
+              Review information, pricing, media and owner verification before a
+              property becomes public.
+            </p>
+          </div>
+        </div>
+        <div id="list"></div>
+      </main>
+    </div>
+    <script src="js/app.js"></script>
+    <script>
+      if (!protect()) throw new Error("stop");
+      async function load() {
+        const d = await api("/admin/properties");
+        $("#list").innerHTML = d.properties
+          .map(
+            (p) =>
+              `<section class="panel"><div class="split-actions" style="justify-content:space-between"><div><h2>${esc(p.title)}</h2><p class="muted">${esc(p.location)} · ${esc(p.type)} ${esc(p.subtype || "")}</p></div><span class="status ${esc(p.status)}">${esc(p.status)}</span></div><p>${esc(p.description || "")}</p><p>Annual Rent: <strong>${money(p.annualRent)}</strong> · Inspection Fee: <strong>${money(p.inspectionFee)}</strong></p><p>Estimated Total: <strong>${money(p.estimatedTotal)}</strong></p><div class="media-grid">${(p.media || []).map((m) => (m.type.startsWith("video") ? `<video controls src="${photo(m.url)}"></video>` : `<img src="${photo(m.url)}">`)).join("") || "<div class='empty'>No media</div>"}</div><p>Owner: ${esc(p.owner?.fullName || "")} · ${p.owner?.verified ? "✓ Verified" : "Not verified"}</p><div class="split-actions" style="margin-top:14px">${p.status === "PENDING" ? `<div class="field" style="flex:1;min-width:180px"><label>Inspection Fee (₦)</label><input id="fee-${esc(p.id)}" type="number" min="0" placeholder="Enter inspection fee" value="${p.inspectionFee || ""}" /></div><button class="btn btn-primary" onclick="approve('${p.id}')">Approve</button><button class="btn btn-danger" onclick="decline('${p.id}')">Decline</button>` : ""}${p.status === "APPROVED" ? `<button class="btn btn-light" onclick="act('${p.id}','RENTED')">Mark Rented</button>` : ""}${p.status !== "REMOVED" ? `<button class="btn btn-danger" onclick="act('${p.id}','REMOVED')">Remove</button>` : ""}</div></section>`,
+          )
+          .join("");
+      }
+      load();
+      async function act(id, a) {
+        try {
+          await api("/admin/properties/" + id, {
+            method: "PUT",
+            body: JSON.stringify({ action: a }),
+          });
+          toast("Property marked " + a + ".");
+          load();
+        } catch (x) {
+          toast(x.message, "error");
+        }
+      }
+      async function approve(id) {
+        const el = document.getElementById("fee-" + id);
+        const inspectionFee = el ? Number(el.value) : NaN;
+        if (isNaN(inspectionFee) || inspectionFee < 0) {
+          toast("Please enter a valid inspection fee before approving.", "error");
+          return;
+        }
+        try {
+          await api("/admin/properties/" + id, {
+            method: "PUT",
+            body: JSON.stringify({ action: "APPROVED", inspectionFee }),
+          });
+          toast("Property approved with inspection fee " + money(inspectionFee) + ".");
+          load();
+        } catch (x) {
+          toast(x.message, "error");
+        }
+      }
+      async function decline(id) {
+        const reason = prompt("Reason for declining this property:");
+        if (reason === null) return;
+        try {
+          await api("/admin/properties/" + id, {
+            method: "PUT",
+            body: JSON.stringify({ action: "DECLINED", reason }),
+          });
+          toast("Property declined.");
+          load();
+        } catch (x) {
+          toast(x.message, "error");
+        }
+      }
+    </script>
+  </body>
+</html>

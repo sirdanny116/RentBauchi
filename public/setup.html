@@ -1,0 +1,128 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Admin Setup — Rent Bauchi</title>
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='5' fill='%23080B10'/%3E%3Cpath d='M5 11 12 5l7 6' stroke='%23DF7F33' stroke-width='2' fill='none'/%3E%3Cpath d='M7.5 10v9h9v-9' stroke='%23F5F5F2' stroke-width='2' fill='none' stroke-linejoin='round'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <main class="form-page">
+      <form class="form-card reveal-scale" id="setupForm">
+        <a class="brand" href="index.html">
+          <span class="brand-mark">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg>
+          </span>
+          Rent Bauchi
+        </a>
+        <h1>First-time admin setup</h1>
+        <p class="muted">Create the administrator account that will manage the platform.</p>
+        <div id="loading" style="text-align:center;padding:20px 0">Loading…</div>
+        <div id="error" class="error"></div>
+        <div id="fields" style="display:none">
+          <div class="field">
+            <label>Full Name</label>
+            <div class="input-wrap">
+              <svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+              <input name="fullName" required placeholder="Your full name" />
+            </div>
+          </div>
+          <div class="field">
+            <label>Email</label>
+            <div class="input-wrap">
+              <svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/><path d="m3 7 9 6 9-6"/></svg>
+              <input name="email" type="email" required placeholder="admin@example.com" />
+            </div>
+          </div>
+          <div class="field">
+            <label>Phone (optional)</label>
+            <div class="input-wrap">
+              <svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h4l2 5-2.5 1.5a12 12 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2z"/></svg>
+              <input name="phone" placeholder="+234 800 000 0000" />
+            </div>
+          </div>
+          <div id="setupKeyField" class="field" style="display:none">
+            <label>Setup Key</label>
+            <div class="input-wrap">
+              <svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="15" cy="9" r="6"/><path d="m2 21 8-8"/><path d="m18 12 3 3"/></svg>
+              <input name="setupKey" placeholder="Enter the setup key" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="field">
+              <label>Password</label>
+              <div class="input-wrap">
+                <svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+                <input name="password" type="password" required placeholder="At least 6 characters" />
+              </div>
+            </div>
+            <div class="field">
+              <label>Confirm Password</label>
+              <div class="input-wrap">
+                <svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+                <input name="confirmPassword" type="password" required placeholder="Repeat your password" />
+              </div>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-block" id="setupBtn">Create Admin Account</button>
+        </div>
+        <p class="muted" style="font-size: 13px; margin-top: 16px">
+          Already set up?
+          <a href="login.html" style="color: var(--secondary-light); font-weight: 700">Go to login</a>
+        </p>
+      </form>
+      <div class="form-page-foot">
+        © <span data-year>2026</span> Rent Bauchi · <a href="index.html">Back to home</a>
+      </div>
+    </main>
+    <script src="js/app.js"></script>
+    <script>
+      (async () => {
+        try {
+          const d = await api("/auth/setup-status");
+          if (!d.required) {
+            location.href = "/login.html";
+            return;
+          }
+          document.getElementById("loading").style.display = "none";
+          document.getElementById("fields").style.display = "";
+          if (d.keyRequired) document.getElementById("setupKeyField").style.display = "";
+          reveal();
+        } catch (e) {
+          document.getElementById("loading").style.display = "none";
+          document.getElementById("error").textContent = e.message;
+          document.getElementById("error").style.display = "block";
+        }
+      })();
+      document
+        .querySelector("#setupForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const er = $("#error");
+          er.style.display = "none";
+          const btn = $("#setupBtn");
+          setLoading(btn, true, "Creating admin…");
+          try {
+            const d = await api("/auth/setup-admin", {
+              method: "POST",
+              body: JSON.stringify(Object.fromEntries(new FormData(e.target))),
+            });
+            setSession(d);
+            toast("Admin account created. Welcome to Rent Bauchi!");
+            setTimeout(() => {
+              location.href = "/admin/";
+            }, 500);
+          } catch (x) {
+            setLoading(btn, false);
+            toast(x.message, "error");
+            er.textContent = x.message;
+            er.style.display = "block";
+          }
+        });
+    </script>
+  </body>
+</html>

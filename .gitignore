@@ -1,0 +1,13 @@
+node_modules/
+.env
+.env.*
+!.env.example
+backend/data/db.json
+backend/data/rent-bauchi.db
+backend/data/rent-bauchi.db-*
+backend/uploads/*
+!backend/uploads/.gitkeep
+backend/seed-admin.js
+backend/cleanup-full.js
+backend/cleanup-partial.js
+.DS_Store

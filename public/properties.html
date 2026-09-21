@@ -1,0 +1,204 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Properties — Rent Bauchi</title>
+    <meta
+      name="description"
+      content="Browse verified houses, shops, offices and commercial spaces available in Bauchi."
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='5' fill='%23080B10'/%3E%3Cpath d='M5 11 12 5l7 6' stroke='%23DF7F33' stroke-width='2' fill='none'/%3E%3Cpath d='M7.5 10v9h9v-9' stroke='%23F5F5F2' stroke-width='2' fill='none' stroke-linejoin='round'/%3E%3C/svg%3E"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <nav class="nav">
+      <div class="container nav-inner">
+        <a class="brand" href="index.html">Rent Bauchi</a>
+        <div class="nav-links">
+          <a href="index.html">Home</a>
+          <a href="about.html">About Us</a>
+          <a href="blog.html">Blog</a>
+          <a class="active" href="properties.html">Properties</a>
+          <a href="contact.html">Contact Us</a>
+        </div>
+        <div class="nav-actions">
+          <a class="btn btn-outline" href="login.html">Login</a>
+                    <a class="btn btn-primary" href="register.html"
+            >Create account
+            <svg
+              class="icon"
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            ><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+          <button class="mobile-nav-toggle" aria-label="Menu">
+            <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+          </button>
+        </div>
+      </div>
+    </nav>
+    <main class="section">
+      <div class="container">
+        <div class="section-head reveal">
+          <div>
+            <span class="eyebrow">Browse</span>
+            <h1>Available properties</h1>
+            <p class="muted">
+              Select a property to continue. Viewing a property from the public
+              site requires login.
+            </p>
+          </div>
+          <div class="split-actions">
+            <a class="btn btn-light" href="about.html">How it works</a>
+            <a class="btn btn-primary" href="register.html"
+              >Create account
+              <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            </a>
+          </div>
+        </div>
+        <div class="browse-bar" style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:22px">
+          <div class="input-wrap" style="flex:1;min-width:220px">
+            <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <input id="propertySearch" placeholder="Live search e.g. 2 bedroom, Wunti" />
+          </div>
+          <select id="sort" class="select" style="min-width:190px">
+            <option value="">Sort: Recommended</option>
+            <option value="newest">Newest first</option>
+            <option value="price_asc">Price: Low to high</option>
+            <option value="price_desc">Price: High to low</option>
+          </select>
+          <span class="muted" id="typeNotice" style="display:none;white-space:nowrap"
+            >Showing: <b id="typeName"></b>
+            <a href="properties.html" id="typeClear" style="margin-left:8px">Clear filter</a></span
+          >
+          <span class="muted" id="resultCount" style="white-space:nowrap"></span>
+        </div>
+        <div id="publicProperties" class="property-grid stagger-children"></div>
+        <div style="text-align:center;margin-top:26px">
+          <button id="loadMore" class="btn btn-light hide">Load more</button>
+        </div>
+      </div>
+    </main>
+    <footer class="footer">
+      <div class="container footer-top">
+        <div>
+          <a class="brand" href="index.html">
+            <span class="brand-mark">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg>
+            </span>
+            Rent Bauchi
+          </a>
+          <p class="footer-blurb">
+            Bauchi's transparent property marketplace. Find, verify and rent
+            homes and commercial spaces with Admin handling inspection,
+            payment and communication.
+          </p>
+          <div class="footer-social">
+            <a href="#" aria-label="Facebook">
+              <svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            </a>
+            <a href="#" aria-label="X">
+              <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4.5c-.8.4-1.6.6-2.5.8a4.4 4.4 0 0 0-7.5 4A12.4 12.4 0 0 1 4 3.5c.5 2.4 1.3 4 3 5.2a4.5 4.5 0 0 1-2-.6c0 2.1 1.5 3.9 3.6 4.4a4.5 4.5 0 0 1-2 .1 4.4 4.4 0 0 0 4.1 3.1A8.9 8.9 0 0 1 3 18.5a12.6 12.6 0 0 0 6.8 2c7.9 0 12.3-6.6 12.3-12.3v-.6c.8-.6 1.6-1.4 2.2-2.3z"/></svg>
+            </a>
+            <a href="#" aria-label="Instagram">
+              <svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><path d="M17.5 6.5h.01"/></svg>
+            </a>
+            <a href="https://wa.me/2348144319299" target="_blank" rel="noopener" aria-label="WhatsApp">
+              <svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+            </a>
+          </div>
+        </div>
+        <div class="footer-col">
+          <h4>Explore</h4>
+          <a href="properties.html">
+            <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16"/><path d="M16 9h3a1 1 0 0 1 1 1v11"/></svg>
+            Browse properties
+          </a>
+          <a href="about.html">
+            <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 8h.01"/></svg>
+            About us
+          </a>
+          <a href="contact.html">
+            <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/><path d="m3 7 9 6 9-6"/></svg>
+            Contact
+          </a>
+        </div>
+        <div class="footer-col">
+          <h4>Account</h4>
+          <a href="login.html">
+            <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+            Login
+          </a>
+          <a href="register.html">
+            <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="4"/><path d="M2 21a7 7 0 0 1 14 0"/><path d="M19 8v6M16 11h6"/></svg>
+            Create account
+          </a>
+          <a href="forgot-password.html">
+            <svg class="icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="15" cy="9" r="6"/><path d="m2 21 8-8"/><path d="m18 12 3 3"/></svg>
+            Reset password
+          </a>
+        </div>
+        <div class="footer-col footer-contact">
+          <h4>Get in touch</h4>
+          <ul>
+            <li>
+              <svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h4l2 5-2.5 1.5a12 12 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2z"/></svg>
+              +234 814 431 9299
+            </li>
+            <li>
+              <svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/><path d="m3 7 9 6 9-6"/></svg>
+              support@rentbauchi.test
+            </li>
+            <li>
+              <svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4z"/><path d="M22 2 11 13"/></svg>
+              @RentBauchi
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="container">
+          <span>© <span data-year>2026</span> Rent Bauchi. Built in Bauchi, for Bauchi.</span>
+          <span class="legal">
+            <a href="about.html">Privacy</a>
+            <a href="about.html">Terms</a>
+          </span>
+        </div>
+      </div>
+    </footer>
+    <script src="js/app.js"></script>
+    <script>
+      (function () {
+        var params = new URLSearchParams(location.search);
+        var type = params.get("type") || "";
+        var q = params.get("q") || "";
+        if (type) {
+          var input = document.createElement("input");
+          input.type = "hidden";
+          input.id = "typeFilter";
+          input.value = type;
+          document.body.appendChild(input);
+          var notice = document.getElementById("typeNotice");
+          if (notice) {
+            notice.style.display = "inline";
+            document.getElementById("typeName").textContent = type;
+          }
+        }
+        if (q) {
+          var search = document.getElementById("propertySearch");
+          if (search) search.value = q;
+        }
+      })();
+    </script>
+  </body>
+</html>

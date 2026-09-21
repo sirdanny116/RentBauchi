@@ -1,0 +1,10 @@
+node_modules
+.git
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+backend/data/rent-bauchi.db*
+backend/uploads/*
+!backend/uploads/.gitkeep

@@ -1,0 +1,453 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Owner Dashboard — Rent Bauchi</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="dashboard-shell">
+      <aside class="sidebar" id="sidebar">
+        <a class="brand" href="/index.html">
+          <span class="brand-mark">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg>
+          </span>
+          Rent Bauchi
+        </a>
+        <nav class="side-nav">
+          <a href="#overview" class="active">
+            <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M3 13h18"/></svg>
+            Overview
+          </a>
+          <a href="#add">
+            <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h6.5"/><path d="M17 13v6M14 16h6"/></svg>
+            Add Property
+          </a>
+          <a href="#properties">
+            <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16"/><path d="M16 9h3a1 1 0 0 1 1 1v11"/><path d="M8 8h2M8 12h2M8 16h2M2 21h20"/></svg>
+            My Properties
+          </a>
+          <a href="#profile">
+            <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="15" cy="9" r="6"/><path d="m2 21 8-8"/><path d="m18 12 3 3"/></svg>
+            Profile & Verification
+          </a>
+          <div class="sidebar-divider"></div>
+          <button data-logout>
+            <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>
+            Logout
+          </button>
+        </nav>
+      </aside>
+      <main class="main">
+        <button
+          class="btn btn-light mobile-menu"
+          onclick="sidebar.classList.toggle('open')"
+        >
+          <svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+          Menu
+        </button>
+        <div class="dash-top">
+          <div>
+            <h1>Welcome, <span id="name">Owner</span></h1>
+            <p class="muted">
+              Manage verified listings and work through Admin.
+            </p>
+          </div>
+          <span id="verify" class="tag">Verification</span>
+        </div>
+        <section id="overview" class="stats stagger-children">
+          <div class="stat">
+            <span class="stat-ico">
+              <svg class="icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16"/><path d="M16 9h3a1 1 0 0 1 1 1v11"/></svg>
+            </span>
+            <span class="muted">My Properties</span
+            ><strong data-count="0" id="total">0</strong>
+          </div>
+          <div class="stat">
+            <span class="stat-ico">
+              <svg class="icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/><path d="m9 12 2 2 4-4"/></svg>
+            </span>
+            <span class="muted">Available</span
+            ><strong data-count="0" id="available">0</strong>
+          </div>
+          <div class="stat">
+            <span class="stat-ico">
+              <svg class="icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+            </span>
+            <span class="muted">Rented</span><strong data-count="0" id="rented">0</strong>
+          </div>
+          <div class="stat">
+            <span class="stat-ico">
+              <svg class="icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.5 4.5 13a4.5 4.5 0 0 1 6.4-6.4l1.1 1.1 1.1-1.1a4.5 4.5 0 0 1 6.4 6.4z"/></svg>
+            </span>
+            <span class="muted">Interested Renters</span
+            ><strong data-count="0" id="interested">0</strong>
+          </div>
+        </section>
+        <section id="add" class="panel">
+          <h2>Add Property</h2>
+          <form id="propertyForm">
+            <div class="form-row">
+              <div class="field">
+                <label>Property Type</label
+                ><select name="type" id="ptype" required>
+                  <option>House</option>
+                  <option>Shop</option>
+                  <option>Office</option>
+                  <option>Warehouse</option>
+                  <option>Event Space</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Property Subtype</label
+                ><select name="subtype" id="psub">
+                  <option>Single Room</option>
+                  <option>Self-contained</option>
+                  <option>1 Bedroom</option>
+                  <option>2 Bedroom</option>
+                  <option>3 Bedroom</option>
+                  <option>Flat</option>
+                  <option>Duplex</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="field">
+                <label>Title</label><input name="title" required />
+              </div>
+              <div class="field">
+                <label>Location</label
+                ><input name="location" required placeholder="Wunti, Bauchi" />
+              </div>
+            </div>
+            <div class="field">
+              <label>Address</label><input name="address" />
+            </div>
+            <div class="field">
+              <label>Description</label
+              ><textarea name="description" rows="4"></textarea>
+            </div>
+            <div class="form-row">
+              <div class="field">
+                <label>Bedrooms</label
+                ><input name="bedrooms" type="number" min="0" />
+              </div>
+              <div class="field">
+                <label>Bathrooms</label
+                ><input name="bathrooms" type="number" min="0" />
+              </div>
+            </div>
+            <div class="field">
+              <label>Facilities</label
+              ><input
+                name="facilities"
+                placeholder="Parking, water, security"
+              />
+            </div>
+            <div class="field">
+              <label>Annual Rent</label
+              ><input
+                name="annualRent"
+                id="rent"
+                type="number"
+                min="0"
+                required
+              />
+            </div>
+            <div class="notice" id="calc" role="alert">
+<strong>Platform Alert:</strong> 10% of the Annual Rent
+              (₦0) goes to the platform.
+            </div>
+            <div style="border-top:1px solid var(--line);margin:22px 0 18px;padding-top:18px">
+              <h3 style="margin:0 0 6px">Property Photos</h3>
+              <p class="muted" style="margin:0 0 16px">Upload up to 4 photos. The <strong>first photo</strong> is the main image shown in property listings. The remaining 3 are visible on the property detail page.</p>
+              <div class="form-row">
+                <div class="field">
+                  <label>Main Photo (required)</label>
+                  <input name="media0" type="file" accept="image/*" required />
+                </div>
+                <div class="field">
+                  <label>Photo 2</label>
+                  <input name="media1" type="file" accept="image/*" />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="field">
+                  <label>Photo 3</label>
+                  <input name="media2" type="file" accept="image/*" />
+                </div>
+                <div class="field">
+                  <label>Photo 4</label>
+                  <input name="media3" type="file" accept="image/*" />
+                </div>
+              </div>
+            </div>
+            <button class="btn btn-primary" id="submitBtn">Submit for Admin Approval</button>
+          </form>
+        </section>
+        <section id="properties" class="panel">
+          <h2>My Properties</h2>
+          <div id="propertyList"></div>
+        </section>
+        <section id="profile" class="panel">
+          <h2>Profile & Verification</h2>
+          <div class="profile-head">
+            <img id="avatar" class="avatar" src="/assets/images/avatar-placeholder.jpg" />
+            <div>
+              <strong id="profileName"></strong>
+              <p class="muted">Owner</p>
+            </div>
+          </div>
+          <div class="notice">
+            Your profile picture must clearly show the same face appearing on
+            your NIN document. Your NIN document is visible to Admin only.
+          </div>
+          <form id="profileForm" style="margin-top: 15px">
+            <div class="form-row">
+              <div class="field">
+                <label>Full Name</label><input name="fullName" />
+              </div>
+              <div class="field">
+                <label>Username</label><input name="username" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="field">
+                <label>Phone</label><input name="phone" />
+              </div>
+              <div class="field">
+                <label>Email</label><input name="email" disabled />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="field">
+                <label>Location</label><input name="location" />
+              </div>
+              <div class="field">
+                <label>Country</label><input name="country" />
+              </div>
+            </div>
+            <div class="field">
+              <label>Bio (1–100 words)</label><textarea name="bio"></textarea>
+            </div>
+            <button class="btn btn-primary">Save Profile</button>
+          </form>
+          <hr
+            style="border: 0; border-top: 1px solid var(--line); margin: 25px 0"
+          />
+          <form id="imageForm">
+            <label><strong>Profile Picture</strong></label>
+            <p class="muted">Upload the clear face photo described above.</p>
+            <input type="file" name="image" accept="image/*" required /><button
+              class="btn btn-light"
+            >
+              Upload Picture
+            </button>
+          </form>
+          <hr
+            style="border: 0; border-top: 1px solid var(--line); margin: 25px 0"
+          />
+          <form id="ninForm">
+            <label><strong>NIN Verification Document</strong></label>
+            <p class="muted">
+              Admin only. Renters will never see this document.
+            </p>
+            <input
+              type="file"
+              name="nin"
+              accept="image/*,.pdf"
+              required
+            /><button class="btn btn-dark">Submit NIN</button>
+          </form>
+          <hr
+            style="border: 0; border-top: 1px solid var(--line); margin: 25px 0"
+          />
+          <h3>Change Password</h3>
+          <form id="passForm">
+            <div class="form-row">
+              <div class="field">
+                <label>Current Password</label
+                ><input name="currentPassword" type="password" />
+              </div>
+              <div class="field">
+                <label>New Password</label
+                ><input name="newPassword" type="password" />
+              </div>
+            </div>
+            <button class="btn btn-dark">Change Password</button>
+          </form>
+        </section>
+      </main>
+    </div>
+    <script src="js/app.js"></script>
+    <script>
+      if (!requireRole("agent")) throw new Error("stop");
+      let me = user();
+      $("#name").textContent = me.fullName.split(" ")[0];
+      $("#profileName").textContent = me.fullName;
+      $("#verify").textContent = me.verified
+        ? "✓ Verified"
+        : "Verification Pending";
+      function fill(u) {
+        me = u;
+        ["fullName", "username", "phone", "location", "country", "bio"].forEach(
+          (k) => (document.querySelector(`#profileForm [name="${k}"]`).value = u[k] || ""),
+        );
+        document.querySelector('#profileForm [name="email"]').value = u.email;
+        $("#profileName").textContent = u.fullName;
+        $("#name").textContent = u.fullName.split(" ")[0];
+        $("#verify").textContent = u.verified
+          ? "✓ Verified"
+          : "Verification Pending";
+        if (u.profileImage) $("#avatar").src = photoUrl(u.profileImage);
+      }
+      async function init() {
+        const m = await api("/me");
+        fill(m.user);
+        loadProps();
+      }
+      init();
+      async function loadProps() {
+        const d = await api("/agent/properties");
+        const ps = d.properties;
+        const counts = {
+          total: ps.length,
+          available: ps.filter((p) => p.status === "APPROVED").length,
+          rented: ps.filter((p) => p.status === "RENTED").length,
+          interested: new Set(
+            ps.flatMap((p) => p.interestedRenterIds || []),
+          ).size,
+        };
+        for (const [key, n] of Object.entries(counts)) {
+          $("#" + key).textContent = n;
+          $("#" + key).dataset.count = n;
+        }
+        $("#propertyList").innerHTML = ps.length
+          ? ps
+              .map(
+                (p) =>
+                  `<div class="panel" style="margin:0 0 12px"><div class="split-actions" style="justify-content:space-between"><div><strong>${esc(p.title)}</strong><p class="muted">${esc(p.location)} · ${money(p.annualRent)} / year</p></div><span class="status ${esc(p.status)}">${esc(p.status)}</span></div><p>${esc(p.description || "")}</p><p>Inspection Fee (set by Admin): <strong>${money(p.inspectionFee)}</strong> · Platform share (10% of rent): ${money(p.platformShare)} · Interested renters: <strong>${p.interestedRenterIds?.length || 0}</strong></p><div class="media-grid">${(p.media || []).map((m) => (m.type.startsWith("video") ? `<video controls src="${esc(photoUrl(m.url))}"></video>` : `<img src="${esc(photoUrl(m.url))}">`)).join("")}</div><p class="muted">Property ID: ${esc(p.id)}</p></div>`,
+              )
+              .join("")
+          : '<div class="empty">No properties yet.</div>';
+      }
+      $("#propertyForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const btn = $("#submitBtn");
+        const fd = new FormData(e.target);
+        const propData = {};
+        for (const [k, v] of fd.entries()) {
+          if (!k.startsWith("media")) propData[k] = v;
+        }
+        setLoading(btn, true, "Creating property...");
+        try {
+          const d = await api("/agent/properties", {
+            method: "POST",
+            body: JSON.stringify(propData),
+          });
+          const propId = d.property.id;
+          const files = [
+            fd.get("media0"),
+            fd.get("media1"),
+            fd.get("media2"),
+            fd.get("media3"),
+          ].filter((f) => f && f.size > 0);
+          if (files.length > 0) {
+            setLoading(btn, true, "Uploading photos...");
+            for (const file of files) {
+              const mf = new FormData();
+              mf.append("media", file);
+              await api(
+                "/agent/properties/" + encodeURIComponent(propId) + "/media",
+                { method: "POST", body: mf },
+              );
+            }
+          }
+          setLoading(btn, false);
+          toast("Property submitted for Admin approval. ID: " + propId);
+          e.target.reset();
+          calc();
+          loadProps();
+        } catch (x) {
+          setLoading(btn, false);
+          toast(x.message, "error");
+        }
+      });
+      function calc() {
+        const r = +$("#rent").value || 0;
+        const share = Math.round(r * 0.10);
+        $("#calc").innerHTML =
+          `<strong>Platform Alert:</strong> 10% of the Annual Rent goes to the platform.<br>Annual Rent: <strong>${money(r)}</strong> · Platform share (10%): <strong>${money(share)}</strong>`;
+      }
+      $("#rent").addEventListener("input", calc);
+      $("#profileForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const btn = e.target.querySelector("button.btn");
+        setLoading(btn, true);
+        try {
+          const d = await api("/profile", {
+            method: "PUT",
+            body: JSON.stringify(Object.fromEntries(new FormData(e.target))),
+          });
+          fill(d.user);
+          setLoading(btn, false);
+          toast("Profile saved.");
+        } catch (x) {
+          setLoading(btn, false);
+          toast(x.message, "error");
+        }
+      });
+      $("#imageForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const btn = e.target.querySelector("button.btn");
+        setLoading(btn, true);
+        try {
+          const d = await api("/profile/image", {
+            method: "POST",
+            body: new FormData(e.target),
+          });
+          fill(d.user);
+          setLoading(btn, false);
+          toast("Profile picture uploaded.");
+        } catch (x) {
+          setLoading(btn, false);
+          toast(x.message, "error");
+        }
+      });
+      $("#ninForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const btn = e.target.querySelector("button.btn");
+        setLoading(btn, true, "Submitting…");
+        try {
+          await api("/agent/nin", {
+            method: "POST",
+            body: new FormData(e.target),
+          });
+          setLoading(btn, false);
+          toast("NIN submitted to Admin for review.");
+        } catch (x) {
+          setLoading(btn, false);
+          toast(x.message, "error");
+        }
+      });
+      $("#passForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const btn = e.target.querySelector("button.btn");
+        setLoading(btn, true);
+        try {
+          await api("/profile/password", {
+            method: "PUT",
+            body: JSON.stringify(Object.fromEntries(new FormData(e.target))),
+          });
+          setLoading(btn, false);
+          toast("Password changed.");
+          e.target.reset();
+        } catch (x) {
+          setLoading(btn, false);
+          toast(x.message, "error");
+        }
+      });
+    </script>
+  </body>
+</html>

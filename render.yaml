@@ -1,0 +1,45 @@
+# Render blueprint — FREE instance type.
+#
+# IMPORTANT: a Render Free web service has an EPHEMERAL filesystem. The SQLite
+# database (backend/data) and uploaded files (backend/uploads) are RESET
+# whenever the service restarts, redeploys, or spins down after 15 minutes of
+# inactivity. Free instances also cannot send outbound SMTP (ports 25/465/587).
+#
+# What this means in practice:
+#   - The site works, but user accounts / properties / photos created at runtime
+#     disappear after the service sleeps or redeploys.
+#   - Email is off; password reset runs in "demo mode" and returns the reset code
+#     directly in the API response.
+#
+# For durable data you must either upgrade to a paid instance + persistent disk
+# (see the commented `disk:` block below), or move the DB and uploads to
+# external storage (e.g. Turso for the DB, Cloudflare R2 for uploads).
+services:
+  - type: web
+    name: rent-bauchi
+    runtime: node
+    plan: free
+    buildCommand: cd backend && npm ci
+    startCommand: node backend/src/server.js
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGINS
+        value: "*"
+      # Leave SMTP_* unset on the free plan (outbound mail is blocked). The app
+      # then runs in demo mode and returns reset codes in the API response.
+      #
+      # Paid upgrade only — persistent disk keeps the DB/uploads across deploys.
+      # Also change `plan: free` to `plan: starter` above.
+      # disk:
+      #   name: rent-bauchi-data
+      #   mountPath: /data
+      #   sizeGB: 1
+      # and add:
+      #   - key: DB_FILE
+      #     value: /data/rent-bauchi.db
+      #   - key: UPLOAD_DIR
+      #     value: /data/uploads

@@ -1,0 +1,109 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Admin Referral Registration</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <main class="form-page">
+      <form class="form-card reveal-scale" id="reg">
+        <a class="brand" href="index.html">
+          <span class="brand-mark">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg>
+          </span>
+          Rent Bauchi <span class="brand-tag">Admin</span>
+        </a>
+        <h1>Create Admin Account</h1>
+        <div class="notice">
+          You must receive a valid referral/invitation token from an existing
+          Admin. Ordinary visitors cannot create Admin accounts.
+        </div>
+        <div id="error" class="error" style="margin-top: 12px"></div>
+        <div class="field">
+          <label>Referral / Invitation Token</label>
+          <div class="input-wrap">
+            <svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v5c0 5-3.5 8.5-8 10-4.5-1.5-8-5-8-10V6z"/></svg>
+            <input name="inviteToken" required placeholder="Paste invitation token" />
+          </div>
+        </div>
+        <div class="field">
+          <label>Full Name</label>
+          <div class="input-wrap">
+            <svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+            <input name="fullName" required placeholder="Abubakar Sadiq" />
+          </div>
+        </div>
+        <div class="field">
+          <label>Username</label>
+          <div class="input-wrap">
+            <svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5"/><path d="M12 8h.01"/></svg>
+            <input name="username" required placeholder="admin_uwais" />
+          </div>
+        </div>
+        <div class="field">
+          <label>Phone</label>
+          <div class="input-wrap">
+            <svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3h4l2 5-2.5 1.5a12 12 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2z"/></svg>
+            <input name="phone" required placeholder="+234 800 000 0000" />
+          </div>
+        </div>
+        <div class="field">
+          <label>Email</label>
+          <div class="input-wrap">
+            <svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z"/><path d="m3 7 9 6 9-6"/></svg>
+            <input name="email" type="email" required placeholder="admin@rentbauchi.com" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label>Password</label>
+            <div class="input-wrap">
+              <svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+              <input name="password" type="password" required placeholder="••••••••" />
+            </div>
+          </div>
+          <div class="field">
+            <label>Confirm Password</label>
+            <div class="input-wrap">
+              <svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+              <input name="confirmPassword" type="password" required placeholder="••••••••" />
+            </div>
+          </div>
+        </div>
+        <button class="btn btn-dark btn-block" id="regBtn">Create Admin Account</button>
+        <p><a href="index.html" style="color: var(--secondary-light); font-weight: 700">Back to Admin Login</a></p>
+      </form>
+      <div class="form-page-foot">
+        © <span data-year>2026</span> Rent Bauchi Admin · <a href="../index.html">Back to site</a>
+      </div>
+    </main>
+    <script src="js/app.js"></script>
+    <script>
+      const qp = new URLSearchParams(location.search);
+      if (qp.get("invite"))
+        document.querySelector('[name="inviteToken"]').value = qp.get("invite");
+      document.querySelector("#reg").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const btn = $("#regBtn");
+        setLoading(btn, true, "Creating…");
+        try {
+          const d = await api("/auth/admin-register", {
+            method: "POST",
+            body: JSON.stringify(Object.fromEntries(new FormData(e.target))),
+          });
+          localStorage.setItem(tokenKey, d.token);
+          localStorage.setItem(userKey, JSON.stringify(d.user));
+          toast("Admin account created. Welcome!");
+          setTimeout(() => (location.href = "dashboard.html"), 500);
+        } catch (x) {
+          setLoading(btn, false);
+          toast(x.message, "error");
+          $("#error").textContent = x.message;
+          $("#error").style.display = "block";
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,98 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Requests — Rent Bauchi Admin</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="dashboard-shell">
+      <aside class="sidebar" id="sidebar">
+        <a class="brand" href="/admin/dashboard.html">
+          <span class="brand-mark">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg>
+          </span>
+          Rent Bauchi Admin
+        </a>
+        <nav class="side-nav">
+          <a href="dashboard.html">
+            <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M3 13h18"/></svg>
+            Overview
+          </a>
+          <a href="users.html">
+            <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><path d="M16.5 4.5a3.5 3.5 0 0 1 0 6.6"/><path d="M18.5 20a6.5 6.5 0 0 0-3.2-5.6"/></svg>
+            Users & Verification
+          </a>
+          <a href="properties.html">
+            <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16"/><path d="M16 9h3a1 1 0 0 1 1 1v11"/><path d="M8 8h2M8 12h2M8 16h2M2 21h20"/></svg>
+            Property Review
+          </a>
+          <a class="active" href="requests.html">
+            <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13"/><path d="M3 6h.01M3 12h.01M3 18h.01"/></svg>
+            Requests
+          </a>
+          <div class="sidebar-divider"></div>
+          <button data-logout>
+            <svg class="icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>
+            Logout
+          </button>
+        </nav>
+      </aside>
+      <main class="main">
+        <button
+          class="btn btn-light mobile-menu"
+          onclick="sidebar.classList.toggle('open')"
+        >
+          <svg class="icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+          Menu
+        </button>
+        <div class="dash-top">
+          <div>
+            <h1>Renter Requests</h1>
+            <p class="muted">
+              Admin is the controlled middleman for enquiries, inspection,
+              payment and other issues.
+            </p>
+          </div>
+        </div>
+        <div id="list"></div>
+      </main>
+    </div>
+    <script src="js/app.js"></script>
+    <script>
+      if (!protect()) throw new Error("stop");
+      async function load() {
+        const d = await api("/admin/requests");
+        $("#list").innerHTML = d.requests.length
+          ? d.requests
+              .map(
+                (r) =>
+                  `<section class="panel"><div class="split-actions" style="justify-content:space-between"><div><h2>#${esc(r.id)} · ${esc(r.type)}</h2><p class="muted">Renter: ${esc(r.renter?.fullName || "")} · ${esc(r.renter?.phone || "")} · ${esc(r.renter?.email || "")}</p><p>Property: <strong>${esc(r.property?.title || "")}</strong> · Owner: ${esc(r.agent?.fullName || "")}</p></div><span class="status ${esc(r.status)}">${esc(r.status)}</span></div><p>${esc(r.message || "")}</p><div class="split-actions"><button class="btn btn-light" onclick="setStatus('${r.id}','ADMIN_CONTACTED_AGENT')">Contacted Owner</button><button class="btn btn-light" onclick="setStatus('${r.id}','INSPECTION_SCHEDULED')">Inspection Scheduled</button><button class="btn btn-primary" onclick="setStatus('${r.id}','APPROVED')">Approved</button><button class="btn btn-danger" onclick="setStatus('${r.id}','DECLINED')">Declined</button><button class="btn btn-dark" onclick="setStatus('${r.id}','COMPLETED')">Completed</button></div><div class="timeline" style="margin-top:18px">${(r.timeline || []).map((t) => `<div class="timeline-item"><strong>${esc(t.status)}</strong><div class="muted">${new Date(t.at).toLocaleString()}</div>${t.message ? esc(t.message) : ""}</div>`).join("")}</div></section>`,
+              )
+              .join("")
+          : '<div class="empty">No renter requests yet.</div>';
+      }
+      load();
+      async function setStatus(id, status) {
+        let message = "";
+        if (status === "ADMIN_CONTACTED_AGENT")
+          message =
+            prompt(
+              "Add a note for the renter/record:",
+              "Admin contacted the owner.",
+            ) || "";
+        try {
+          await api("/admin/requests/" + id, {
+            method: "PUT",
+            body: JSON.stringify({ status, message }),
+          });
+          toast("Request updated.");
+          load();
+        } catch (x) {
+          toast(x.message, "error");
+        }
+      }
+    </script>
+  </body>
+</html>

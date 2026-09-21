@@ -1,0 +1,57 @@
+# Free always-on deployment: app + Caddy (automatic HTTPS) on a single VM
+# (e.g. Oracle Cloud Always Free). Data persists in the named volume `rent-data`.
+#
+# 1. Create a `.env` file next to this file with at least:
+#      DOMAIN=<your-domain-or-ip.sslip.io>
+#      JWT_SECRET=<long-random-string>
+#      APP_URL=https://<your-domain>
+#      SMTP_HOST=smtp.gmail.com
+#      SMTP_PORT=465
+#      SMTP_USER=you@gmail.com
+#      SMTP_PASS=<app-password>
+#      MAIL_FROM=Rent Bauchi <you@gmail.com>
+# 2. docker compose up -d --build
+#
+# If you don't own a domain, use a free wildcard-DNS hostname that points at
+# your server's public IP, e.g. DOMAIN=203.0.113.10.sslip.io (replace with your
+# real IP). Caddy will obtain a real Let's Encrypt certificate for it.
+
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    environment:
+      NODE_ENV: production
+      PORT: "5000"
+      JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET in .env}
+      APP_URL: ${APP_URL:-http://localhost}
+      DB_FILE: /data/rent-bauchi.db
+      UPLOAD_DIR: /data/uploads
+      CORS_ORIGINS: ${CORS_ORIGINS:-*}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-465}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
+      MAIL_FROM: ${MAIL_FROM:-Rent Bauchi <no-reply@rentbauchi.test>}
+    volumes:
+      - rent-data:/data
+
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    depends_on:
+      - app
+    environment:
+      DOMAIN: ${DOMAIN:-localhost}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+
+volumes:
+  rent-data:
+  caddy-data:
+  caddy-config:
