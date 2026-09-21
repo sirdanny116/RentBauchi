@@ -6,13 +6,23 @@ const SMTP_USER = process.env.SMTP_USER;
 const SMTP_PASS = process.env.SMTP_PASS;
 const MAIL_FROM = process.env.MAIL_FROM || "Rent Bauchi <no-reply@rentbauchi.test>";
 
-function isConfigured() {
+const BREVO_API_KEY = process.env.BREVO_API_KEY;
+const BREVO_FROM_EMAIL = process.env.BREVO_FROM_EMAIL;
+const BREVO_FROM_NAME = process.env.BREVO_FROM_NAME || "Rent Bauchi";
+
+function smtpConfigured() {
   return Boolean(SMTP_HOST && SMTP_USER && SMTP_PASS);
+}
+function brevoConfigured() {
+  return Boolean(BREVO_API_KEY && BREVO_FROM_EMAIL);
+}
+function isConfigured() {
+  return smtpConfigured() || brevoConfigured();
 }
 
 let transporter = null;
 function getTransporter() {
-  if (!transporter && isConfigured()) {
+  if (!transporter && smtpConfigured()) {
     transporter = nodemailer.createTransport({
       host: SMTP_HOST,
       port: SMTP_PORT,
@@ -23,14 +33,40 @@ function getTransporter() {
   return transporter;
 }
 
-async function sendMail({ to, subject, text, html }) {
-  if (!isConfigured()) {
-    // Demo mode: log instead of sending.
-    console.log("[mailer:demo] To:", to, "| Subject:", subject);
-    console.log("[mailer:demo] Body:", text || html);
-    return { demo: true };
+async function sendBrevo({ to, subject, text, html }) {
+  const res = await fetch("https://api.brevo.com/v3/smtp/email", {
+    method: "POST",
+    headers: {
+      "api-key": BREVO_API_KEY,
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
+    body: JSON.stringify({
+      sender: { email: BREVO_FROM_EMAIL, name: BREVO_FROM_NAME },
+      to: [{ email: to }],
+      subject,
+      textContent: text,
+      htmlContent: html,
+    }),
+  });
+  if (!res.ok) {
+    const body = await res.text().catch(() => "");
+    throw new Error(`Brevo email failed (${res.status}): ${body}`);
   }
-  return getTransporter().sendMail({ from: MAIL_FROM, to, subject, text, html });
+  return { ok: true };
+}
+
+async function sendMail({ to, subject, text, html }) {
+  if (smtpConfigured()) {
+    return getTransporter().sendMail({ from: MAIL_FROM, to, subject, text, html });
+  }
+  if (brevoConfigured()) {
+    return sendBrevo({ to, subject, text, html });
+  }
+  // Demo mode: log instead of sending.
+  console.log("[mailer:demo] To:", to, "| Subject:", subject);
+  console.log("[mailer:demo] Body:", text || html);
+  return { demo: true };
 }
 
 async function sendPasswordReset(email, code) {

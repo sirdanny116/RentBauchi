@@ -110,6 +110,7 @@ Copy `backend/.env.example` to `backend/.env` and set real values. Key variables
 | `CORS_ORIGINS` | Comma-separated allowed browser origins, or `*` for any (default). |
 | `SETUP_KEY` | Optional key required to create the first admin. |
 | `SMTP_HOST/PORT/USER/PASS`, `MAIL_FROM` | Nodemailer SMTP. Leave `SMTP_USER`/`SMTP_PASS` blank for demo mode (reset code returned in the API response). |
+| `BREVO_API_KEY`, `BREVO_FROM_EMAIL`, `BREVO_FROM_NAME` | Brevo HTTP email API — works where SMTP is blocked (e.g. Render free). Free: 300 emails/day, no domain required; verify the sender email once in the Brevo dashboard. When set, reset codes are emailed instead of returned. |
 | `DB_FILE` / `UPLOAD_DIR` | Override where the SQLite DB and uploads live. |
 | `STATIC_MAX_AGE` | Browser cache max-age for non-HTML static assets (e.g. `7d`). HTML is always revalidated. |
 | `DB_CHECKPOINT_MS` | How often the SQLite WAL is checkpointed to the main DB file (default `60000`). |
@@ -143,8 +144,10 @@ Push to GitHub, then Render → **New → Blueprint** → pick the repo. Render 
 - The filesystem is **ephemeral**. The SQLite DB and `uploads/` are reset on every
   restart, redeploy, or 15-minute idle spin-down, and the first-run admin must be
   recreated after a reset. Use it for demos, not real data.
-- Outbound SMTP is blocked, so **leave `SMTP_*` unset**. Password reset then runs
-  in demo mode and returns the code in the API response.
+- Outbound SMTP is blocked, so SMTP email won't work. Set **`BREVO_API_KEY`** and
+  **`BREVO_FROM_EMAIL`** (free at brevo.com, no domain needed — verify the sender
+  email once) to send reset codes to users' inboxes. Without it, reset runs in
+  demo mode and returns the code in the API response.
 - First load after a sleep takes ~1 minute.
 
 For durable data, either upgrade to `plan: starter` and attach the persistent
