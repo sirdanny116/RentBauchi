@@ -118,7 +118,11 @@ async function api(path, options = {}) {
   if (token()) headers.Authorization = "Bearer " + token();
   const r = await fetch(API + path, { ...options, headers });
   const data = await r.json().catch(() => ({}));
-  if (!r.ok) throw new Error(data.message || "Request failed");
+  if (!r.ok) {
+    const e = new Error(data.message || "Request failed");
+    e.status = r.status;
+    throw e;
+  }
   return data;
 }
 function money(n) {

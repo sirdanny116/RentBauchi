@@ -198,8 +198,74 @@
           const main = mediaList[0] ? photoUrl(mediaList[0].url) : (photoUrl(p.media?.[0]?.url) || "/assets/images/hero-house.jpg");
           const owner = p.owner || {};
           const loggedIn = !!token();
-          const nextUrl = "/property.html?id=" + encodeURIComponent(id);
-          const loginUrl = "/login.html?next=" + encodeURIComponent(nextUrl);
+          const requested = new URLSearchParams(location.search).get("action");
+          const makeLoginUrl = (action) =>
+            "/login.html?next=" +
+            encodeURIComponent(
+              "/property.html?id=" +
+                encodeURIComponent(id) +
+                (action ? "&action=" + action : ""),
+            );
+          function flagAuth(e, action) {
+            if (e && e.status === 401) {
+              localStorage.removeItem(tokenKey);
+              localStorage.removeItem(sessionUserKey);
+              location.href = makeLoginUrl(action);
+              return true;
+            }
+            return false;
+          }
+          async function doInterest(action) {
+            try {
+              await api("/renter/interested/" + id, { method: "POST" });
+              toast("Your interest has been sent to Admin.");
+            } catch (e) {
+              if (flagAuth(e, action || "interest")) return;
+              toast(e.message, "error");
+            }
+          }
+          async function doSave(action) {
+            try {
+              await api("/renter/saved/" + id, { method: "POST" });
+              toast("Property saved. Find it under Saved Properties.");
+            } catch (e) {
+              if (flagAuth(e, action || "save")) return;
+              toast(e.message, "error");
+            }
+          }
+          async function doAsk(action) {
+            const type = prompt(
+              "What do you need? Type: enquiry, inspection, payment or other",
+              "inspection",
+            );
+            if (!["enquiry", "inspection", "payment", "other"].includes(type))
+              return;
+            const message = prompt(
+              "Message to Admin",
+              "I would like help with this property.",
+            );
+            try {
+              await api("/renter/requests", {
+                method: "POST",
+                body: JSON.stringify({ propertyId: id, type, message }),
+              });
+              toast("Request sent to Admin.");
+            } catch (e) {
+              if (flagAuth(e, action || "ask")) return;
+              toast(e.message, "error");
+            }
+          }
+          async function doWhatsApp(action) {
+            const open = (u) =>
+              action ? (location.href = u) : window.open(u, "_blank", "noopener");
+            try {
+              const d = await api("/platform/contact");
+              open(d.whatsapp || "https://wa.me/2348144319299");
+            } catch (e) {
+              if (flagAuth(e, action || "whatsapp")) return;
+              open("https://wa.me/2348144319299");
+            }
+          }
           pick("title").textContent = p.title + " — Rent Bauchi";
           pick("#root").innerHTML = `
             <div class="detail-grid reveal">
@@ -262,45 +328,17 @@
               </div>
             </section>`;
           reveal();
-          pick("#interestBtn").addEventListener("click", async () => {
-            if (!loggedIn) return (location.href = loginUrl);
-            try {
-              await api("/renter/interested/" + id, { method: "POST" });
-              toast("Your interest has been sent to Admin.");
-            } catch (e) {
-              toast(e.message, "error");
-            }
+          pick("#interestBtn").addEventListener("click", () => {
+            if (!loggedIn) return (location.href = makeLoginUrl("interest"));
+            doInterest();
           });
-          pick("#saveBtn").addEventListener("click", async () => {
-            if (!loggedIn) return (location.href = loginUrl);
-            try {
-              await api("/renter/saved/" + id, { method: "POST" });
-              toast("Property saved. Find it under Saved Properties.");
-            } catch (e) {
-              toast(e.message, "error");
-            }
+          pick("#saveBtn").addEventListener("click", () => {
+            if (!loggedIn) return (location.href = makeLoginUrl("save"));
+            doSave();
           });
-          pick("#askBtn").addEventListener("click", async () => {
-            if (!loggedIn) return (location.href = loginUrl);
-            const type = prompt(
-              "What do you need? Type: enquiry, inspection, payment or other",
-              "inspection",
-            );
-            if (!["enquiry", "inspection", "payment", "other"].includes(type))
-              return;
-            const message = prompt(
-              "Message to Admin",
-              "I would like help with this property.",
-            );
-            try {
-              await api("/renter/requests", {
-                method: "POST",
-                body: JSON.stringify({ propertyId: id, type, message }),
-              });
-              toast("Request sent to Admin.");
-            } catch (e) {
-              toast(e.message, "error");
-            }
+          pick("#askBtn").addEventListener("click", () => {
+            if (!loggedIn) return (location.href = makeLoginUrl("ask"));
+            doAsk();
           });
           api("/platform/contact")
             .then((d) => {
@@ -310,9 +348,18 @@
           pick("#waBtn").addEventListener("click", (e) => {
             if (!loggedIn) {
               e.preventDefault();
-              location.href = loginUrl;
+              return (location.href = makeLoginUrl("whatsapp"));
             }
+            doWhatsApp();
           });
+          if (loggedIn && ["interest", "save", "ask", "whatsapp"].includes(requested)) {
+            history.replaceState(null, "", "/property.html?id=" + encodeURIComponent(id));
+            const a = requested;
+            if (a === "interest") doInterest(a);
+            else if (a === "save") doSave(a);
+            else if (a === "ask") doAsk(a);
+            else if (a === "whatsapp") doWhatsApp(a);
+          }
           const gMain = pick("#galleryMain");
           const thumbs = document.querySelectorAll(".gallery-thumb");
           if (gMain && thumbs.length) {
